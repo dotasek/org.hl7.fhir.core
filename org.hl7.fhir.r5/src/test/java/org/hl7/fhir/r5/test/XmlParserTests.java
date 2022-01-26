@@ -25,7 +25,7 @@ public class XmlParserTests {
   @BeforeAll
   public static void setUp() throws Exception {
     FilesystemPackageCacheManager pcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
-    context = SimpleWorkerContext.fromPackage(pcm.loadPackage("hl7.fhir.r4.core", "4.0.1"));
+    context = new SimpleWorkerContext.SimpleWorkerContextBuilder().fromPackage(pcm.loadPackage("hl7.fhir.r4.core", "4.0.1"));
     fp = new FHIRPathEngine(context);
 
     context.loadFromFile(TestingUtilities.loadTestResourceStream("validator", "cda", "any.xml"), "any.xml", null);

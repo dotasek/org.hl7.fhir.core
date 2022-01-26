@@ -184,7 +184,7 @@ public class ValidationEngine implements IValidatorResourceFetcher, IValidationP
   @Getter @Setter private Map<String, ValidationControl> validationControl = new HashMap<>();
 
   public ValidationEngine() throws IOException {
-    setContext(SimpleWorkerContext.fromNothing());
+    setContext(new SimpleWorkerContext.SimpleWorkerContextBuilder().fromNothing());
     initContext(null);
     igLoader = new IgLoader(getPcm(), getContext(), getVersion(), isDebug());
   }
@@ -222,13 +222,13 @@ public class ValidationEngine implements IValidatorResourceFetcher, IValidationP
     NpmPackage npm = getPcm().loadPackage(src, null);
     if (npm != null) {
       version = npm.fhirVersion();
-      context = SimpleWorkerContext.fromPackage(npm, ValidatorUtils.loaderForVersion(version));
+      context = new SimpleWorkerContext.SimpleWorkerContextBuilder().fromPackage(npm, ValidatorUtils.loaderForVersion(version));
     } else {
       Map<String, byte[]> source = igLoader.loadIgSource(src, recursive, true);
       if (version == null) {
         version = getVersionFromPack(source);
       }
-      context = SimpleWorkerContext.fromDefinitions(source, ValidatorUtils.loaderForVersion(version), new PackageVersion(src));
+      context = new SimpleWorkerContext.SimpleWorkerContextBuilder().fromDefinitions(source, ValidatorUtils.loaderForVersion(version), new PackageVersion(src));
       ValidatorUtils.grabNatives(getBinaries(), source, "http://hl7.org/fhir");
     }
     // ucum-essence.xml should be in the class path. if it's not, ask about how to sort this out 

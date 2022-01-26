@@ -113,6 +113,12 @@
 			<version>4.9.0</version>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>${lombok_version}</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- Test dependencies -->
 		<dependency>

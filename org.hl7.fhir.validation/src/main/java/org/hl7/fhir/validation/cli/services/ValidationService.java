@@ -91,7 +91,7 @@ public class ValidationService {
     VersionSourceInformation versions = new VersionSourceInformation();
     IgLoader igLoader = new IgLoader(
       new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION),
-      SimpleWorkerContext.fromNothing(),
+      new SimpleWorkerContext.SimpleWorkerContextBuilder().fromNothing(),
       null);
     for (String src : cliContext.getIgs()) {
       igLoader.scanForIgVersion(src, cliContext.isRecursive(), versions);

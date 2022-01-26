@@ -89,7 +89,7 @@ public class TestingUtilities extends BaseTestingUtilities {
       FilesystemPackageCacheManager pcm;
       try {
         pcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
-        IWorkerContext fcontext = SimpleWorkerContext.fromPackage(pcm.loadPackage(VersionUtilities.packageForVersion(version), version));
+        IWorkerContext fcontext = new SimpleWorkerContext.SimpleWorkerContextBuilder().fromPackage(pcm.loadPackage(VersionUtilities.packageForVersion(version), version));
         fcontext.setUcumService(new UcumEssenceService(TestingUtilities.loadTestResourceStream("ucum", "ucum-essence.xml")));
         fcontext.setExpansionProfile(new Parameters());
 //        ((SimpleWorkerContext) fcontext).connectToTSServer(new TerminologyClientR5("http://tx.fhir.org/r4"), null);

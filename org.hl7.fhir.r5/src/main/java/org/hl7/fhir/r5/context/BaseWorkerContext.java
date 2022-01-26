@@ -240,19 +240,17 @@ public abstract class BaseWorkerContext extends I18nBase implements IWorkerConte
   private ICanonicalResourceLocator locator;
   protected String userAgent;
   
-  public BaseWorkerContext() throws FileNotFoundException, IOException, FHIRException {
-    txCache = new TerminologyCache(lock, null);
+  protected BaseWorkerContext() throws FileNotFoundException, IOException, FHIRException {
     setValidationMessageLanguage(getLocale());
     clock = new TimeTracker();
   }
 
-  public BaseWorkerContext(Locale locale) throws FileNotFoundException, IOException, FHIRException {
-    txCache = new TerminologyCache(lock, null);
+  protected BaseWorkerContext(Locale locale) throws FileNotFoundException, IOException, FHIRException {
     setValidationMessageLanguage(locale);
     clock = new TimeTracker();
   }
 
-  public BaseWorkerContext(CanonicalResourceManager<CodeSystem> codeSystems, CanonicalResourceManager<ValueSet> valueSets, CanonicalResourceManager<ConceptMap> maps, CanonicalResourceManager<StructureDefinition> profiles,
+  protected BaseWorkerContext(CanonicalResourceManager<CodeSystem> codeSystems, CanonicalResourceManager<ValueSet> valueSets, CanonicalResourceManager<ConceptMap> maps, CanonicalResourceManager<StructureDefinition> profiles,
       CanonicalResourceManager<ImplementationGuide> guides) throws FileNotFoundException, IOException, FHIRException {
     this();
     this.codeSystems = codeSystems;
@@ -1202,7 +1200,7 @@ public abstract class BaseWorkerContext extends I18nBase implements IWorkerConte
 
   // --------------------------------------------------------------------------------------------------------------------------------------------------------
   
-  public void initTS(String cachePath) throws Exception {
+  protected void initTS(String cachePath) throws IOException {
     if (!new File(cachePath).exists()) {
       Utilities.createDirectory(cachePath);
     }
