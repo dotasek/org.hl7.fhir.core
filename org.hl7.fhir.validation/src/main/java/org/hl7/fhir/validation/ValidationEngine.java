@@ -1,7 +1,6 @@
 package org.hl7.fhir.validation;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import org.fhir.ucum.UcumEssenceService;
@@ -183,39 +182,81 @@ public class ValidationEngine implements IValidatorResourceFetcher, IValidationP
    */
   @Getter @Setter private Map<String, ValidationControl> validationControl = new HashMap<>();
 
-  public ValidationEngine() throws IOException {
-    setContext(new SimpleWorkerContext.SimpleWorkerContextBuilder().fromNothing());
-    initContext(null);
-    igLoader = new IgLoader(getPcm(), getContext(), getVersion(), isDebug());
+  private ValidationEngine()  {
+
   }
 
-  public ValidationEngine(String src) throws FHIRException, IOException {
-    loadCoreDefinitions(src, false, null);
-    igLoader = new IgLoader(getPcm(), getContext(), getVersion(), isDebug());
-  }
+  public static class ValidationEngineBuilder {
 
-  public ValidationEngine(String src, String txsrvr, String txLog, FhirPublication version, boolean canRunWithoutTerminologyServer, String vString, String userAgent) throws FHIRException, IOException, URISyntaxException {
-    loadCoreDefinitions(src, false, null);
-    getContext().setUserAgent(userAgent);
-    getContext().setCanRunWithoutTerminology(canRunWithoutTerminologyServer);
-    setTerminologyServer(txsrvr, txLog, version);
-    setVersion(vString);
-    igLoader = new IgLoader(getPcm(), getContext(), getVersion(), isDebug());
-  }
+    @With
+    private final String terminologyCachePath;
 
-  public ValidationEngine(String src, String txsrvr, String txLog, FhirPublication version, String vString, String userAgent) throws FHIRException, IOException, URISyntaxException {
-    loadCoreDefinitions(src, false, null);
-    getContext().setUserAgent(userAgent);
-    setTerminologyServer(txsrvr, txLog, version);
-    setVersion(vString);
-    igLoader = new IgLoader(getPcm(), getContext(), getVersion(), isDebug());
-  }
+    @With
+    private final String userAgent;
 
-  public ValidationEngine(String src, String vString, TimeTracker tt, String userAgent) throws FHIRException, IOException, URISyntaxException {
-    loadCoreDefinitions(src, false, tt);
-    getContext().setUserAgent(userAgent);
-    setVersion(vString);
-    igLoader = new IgLoader(getPcm(), getContext(), getVersion(), isDebug());
+    @With
+    private final String version;
+
+    //All three of these may be required to instantiate a txServer
+    private final String txServer;
+    private final String txLog;
+    private final FhirPublication txVersion;
+
+    @With
+    private final TimeTracker timeTracker;
+
+    @With
+    private final boolean canRunWithoutTerminologyServer;
+
+    public ValidationEngineBuilder() {
+      terminologyCachePath = null;
+      userAgent = null;
+      version = null;
+      txServer = null;
+      txLog = null;
+      txVersion = null;
+      timeTracker = null;
+      canRunWithoutTerminologyServer = false;
+    }
+
+    public ValidationEngineBuilder(String terminologyCachePath, String userAgent, String version, String txServer, String txLog, FhirPublication txVersion, TimeTracker timeTracker, boolean canRunWithoutTerminologyServer) {
+      this.terminologyCachePath = terminologyCachePath;
+      this.userAgent = userAgent;
+      this.version = version;
+      this.txServer = txServer;
+      this.txLog = txLog;
+      this.txVersion = txVersion;
+      this.timeTracker = timeTracker;
+      this.canRunWithoutTerminologyServer = canRunWithoutTerminologyServer;
+    }
+
+    public ValidationEngineBuilder withTxServer(String txServer, String txLog, FhirPublication txVersion) {
+      return new ValidationEngineBuilder(terminologyCachePath, userAgent, version, txServer, txLog, txVersion,timeTracker, canRunWithoutTerminologyServer);
+    }
+
+    public ValidationEngine fromNothing() throws IOException {
+      ValidationEngine engine = new ValidationEngine();
+      SimpleWorkerContext.SimpleWorkerContextBuilder contextBuilder = new SimpleWorkerContext.SimpleWorkerContextBuilder();
+      if (terminologyCachePath != null)
+        contextBuilder = contextBuilder.withTerminologyCachePath(terminologyCachePath);
+      engine.setContext(contextBuilder.build());
+      engine.initContext(timeTracker);
+      engine.setIgLoader(new IgLoader(engine.getPcm(), engine.getContext(), engine.getVersion(), engine.isDebug()));
+      return engine;
+    }
+
+    public ValidationEngine fromSource(String src) throws IOException, URISyntaxException {
+      ValidationEngine engine = new ValidationEngine();
+      engine.loadCoreDefinitions(src, false, timeTracker);
+      engine.getContext().setUserAgent(userAgent);
+      engine.getContext().setCanRunWithoutTerminology(canRunWithoutTerminologyServer);
+      if (txServer != null) {
+        engine.setTerminologyServer(txServer, txLog, txVersion);
+      }
+      engine.setVersion(version);
+      engine.setIgLoader(new IgLoader(engine.getPcm(), engine.getContext(), engine.getVersion(), engine.isDebug()));
+      return engine;
+    }
   }
 
   private void loadCoreDefinitions(String src, boolean recursive, TimeTracker tt) throws FHIRException, IOException {
@@ -243,7 +284,7 @@ public class ValidationEngine implements IValidatorResourceFetcher, IValidationP
     initContext(tt);
   }
 
-  public void initContext(TimeTracker tt) throws IOException {
+  protected void initContext(TimeTracker tt) throws IOException {
     context.setCanNoTS(true);
     context.setCacheId(UUID.randomUUID().toString());
     context.setAllowLoadingDuplicates(true); // because of Forge
