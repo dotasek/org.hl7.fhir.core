@@ -141,17 +141,71 @@ public class ValidationTests implements IEvaluationContext, IValidatorResourceFe
     version = VersionUtilities.getMajMin(version);
     if (!ve.containsKey(version)) {
       if (version.startsWith("5.0"))
-        ve.put(version, new ValidationEngine("hl7.fhir.r5.core#4.5.0", ValidationEngineTests.DEF_TX, txLog, FhirPublication.R5, true, "4.5.0", "fhir/test-cases"));
+        ve.put(version,
+          //DIRTY
+          // new ValidationEngine("hl7.fhir.r5.core#4.5.0", ValidationEngineTests.DEF_TX, txLog, FhirPublication.R5, true, "4.5.0", "fhir/test-cases")
+          new ValidationEngine.ValidationEngineBuilder()
+            .withCanRunWithoutTerminologyServer(true)
+            .withTxServer(ValidationEngineTests.DEF_TX, txLog, FhirPublication.R5)
+            .withVersion("4.5.0")
+            .withUserAgent("fhir/test-cases")
+            .fromSource("hl7.fhir.r5.core#4.5.0")
+        );
       else if (version.startsWith("4.3"))
-        ve.put(version, new ValidationEngine("hl7.fhir.r4b.core#4.3.0", ValidationEngineTests.DEF_TX, txLog, FhirPublication.R4B, true, "4.3.0", "fhir/test-cases"));
+        ve.put(version,
+          //DIRTY
+          // new ValidationEngine("hl7.fhir.r4b.core#4.3.0", ValidationEngineTests.DEF_TX, txLog, FhirPublication.R4B, true, "4.3.0", "fhir/test-cases")
+          new ValidationEngine.ValidationEngineBuilder()
+            .withCanRunWithoutTerminologyServer(true)
+            .withTxServer(ValidationEngineTests.DEF_TX, txLog, FhirPublication.R4B)
+            .withVersion("4.3.0")
+            .withUserAgent("fhir/test-cases")
+            .fromSource("hl7.fhir.r4b.core#4.3.0")
+        );
       else if (version.startsWith("4.0"))
-        ve.put(version, new ValidationEngine("hl7.fhir.r4.core#4.0.1", ValidationEngineTests.DEF_TX, txLog, FhirPublication.R4, true, "4.0.1", "fhir/test-cases"));
+        ve.put(version,
+          //DIRTY
+          // new ValidationEngine("hl7.fhir.r4.core#4.0.1", ValidationEngineTests.DEF_TX, txLog, FhirPublication.R4, true, "4.0.1", "fhir/test-cases")
+          new ValidationEngine.ValidationEngineBuilder()
+            .withCanRunWithoutTerminologyServer(true)
+            .withTxServer(ValidationEngineTests.DEF_TX, txLog, FhirPublication.R4)
+            .withVersion("4.0.1")
+            .withUserAgent("fhir/test-cases")
+            .fromSource("hl7.fhir.r4.core#4.0.1")
+        );
       else if (version.startsWith("3.0"))
-        ve.put(version, new ValidationEngine("hl7.fhir.r3.core#3.0.2", ValidationEngineTests.DEF_TX, txLog, FhirPublication.STU3, true, "3.0.2", "fhir/test-cases"));
+        ve.put(version,
+          //DIRTY
+          // new ValidationEngine("hl7.fhir.r3.core#3.0.2", ValidationEngineTests.DEF_TX, txLog, FhirPublication.STU3, true, "3.0.2", "fhir/test-cases")
+          new ValidationEngine.ValidationEngineBuilder()
+            .withCanRunWithoutTerminologyServer(true)
+            .withTxServer(ValidationEngineTests.DEF_TX, txLog, FhirPublication.STU3)
+            .withVersion("3.0.2")
+            .withUserAgent("fhir/test-cases")
+            .fromSource("hl7.fhir.r3.core#3.0.2")
+        );
       else if (version.startsWith("1.0"))
-        ve.put(version, new ValidationEngine("hl7.fhir.r2.core#1.0.2", ValidationEngineTests.DEF_TX, txLog, FhirPublication.DSTU2, true, "1.0.2", "fhir/test-cases"));
+        ve.put(version,
+          //DIRTY
+          // new ValidationEngine("hl7.fhir.r2.core#1.0.2", ValidationEngineTests.DEF_TX, txLog, FhirPublication.DSTU2, true, "1.0.2", "fhir/test-cases")
+          new ValidationEngine.ValidationEngineBuilder()
+            .withCanRunWithoutTerminologyServer(true)
+            .withTxServer(ValidationEngineTests.DEF_TX, txLog, FhirPublication.DSTU2)
+            .withVersion("1.0.2")
+            .withUserAgent("fhir/test-cases")
+            .fromSource("hl7.fhir.r2.core#1.0.2")
+        );
       else if (version.startsWith("1.4"))
-        ve.put(version, new ValidationEngine("hl7.fhir.r2b.core#1.4.0", ValidationEngineTests.DEF_TX, txLog, FhirPublication.DSTU2016May, true, "1.4.0", "fhir/test-cases"));
+        ve.put(version,
+          //DIRTY
+          // new ValidationEngine("hl7.fhir.r2b.core#1.4.0", ValidationEngineTests.DEF_TX, txLog, FhirPublication.DSTU2016May, true, "1.4.0", "fhir/test-cases")
+          new ValidationEngine.ValidationEngineBuilder()
+            .withCanRunWithoutTerminologyServer(true)
+            .withTxServer(ValidationEngineTests.DEF_TX, txLog, FhirPublication.DSTU2016May)
+            .withVersion("1.4.0")
+            .withUserAgent("fhir/test-cases")
+            .fromSource("hl7.fhir.r2b.core#1.4.0")
+        );
       else
         throw new Exception("unknown version " + version);
     }

@@ -208,9 +208,7 @@ public class SimpleWorkerContext extends BaseWorkerContext implements IWorkerCon
     }
 
     public SimpleWorkerContext build() throws IOException {
-      if (terminologyCachePath != null) {
-        context.initTS(terminologyCachePath);
-      }
+      context.initTS(terminologyCachePath);
       return context;
     }
 

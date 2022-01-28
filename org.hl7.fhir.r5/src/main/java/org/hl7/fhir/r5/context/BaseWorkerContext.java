@@ -1201,7 +1201,7 @@ public abstract class BaseWorkerContext extends I18nBase implements IWorkerConte
   // --------------------------------------------------------------------------------------------------------------------------------------------------------
   
   protected void initTS(String cachePath) throws IOException {
-    if (!new File(cachePath).exists()) {
+    if (cachePath != null && !new File(cachePath).exists()) {
       Utilities.createDirectory(cachePath);
     }
     txCache = new TerminologyCache(lock, cachePath);

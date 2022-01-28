@@ -86,8 +86,11 @@ public class UtilitiesXTests {
 	    FilesystemPackageCacheManager pcm;
 	    try {
 	      pcm = new FilesystemPackageCacheManager(true, ToolsVersion.TOOLS_VERSION);
-	      IWorkerContext fcontext = SimpleWorkerContext.fromPackage(pcm.loadPackage(VersionUtilities.packageForVersion(version), version), loaderForVersion(version));
-	      fcontext.setUcumService(new UcumEssenceService(UtilitiesXTests.loadTestResourceStream("ucum", "ucum-essence.xml")));
+	      //DIRTY
+        //IWorkerContext fcontext = SimpleWorkerContext.fromPackage(pcm.loadPackage(VersionUtilities.packageForVersion(version), version), loaderForVersion(version));
+        IWorkerContext fcontext = new SimpleWorkerContext.SimpleWorkerContextBuilder().fromPackage(pcm.loadPackage(VersionUtilities.packageForVersion(version), version), loaderForVersion(version));
+
+        fcontext.setUcumService(new UcumEssenceService(UtilitiesXTests.loadTestResourceStream("ucum", "ucum-essence.xml")));
 	      fcontext.setExpansionProfile(new Parameters());
 	      fcontexts.put(version, fcontext);
 	    } catch (Exception e) {
